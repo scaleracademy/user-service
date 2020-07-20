@@ -7,4 +7,6 @@ import dev.naman.userservice.model.User;
 public interface UserService {
 
     User registerUser(UserDto userDto);
+
+    User validateUser(String token);
 }

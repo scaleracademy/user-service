@@ -7,9 +7,7 @@ import dev.naman.userservice.model.User;
 import dev.naman.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RegistrationController {
@@ -26,4 +24,15 @@ public class RegistrationController {
                 new UserResponseDto(user.getId(), user.getFullName(), user.getEmail(), user.isActive())
         );
     }
+
+    // /user/confirm?token=83677e98730803
+    @GetMapping("/user/confirm")
+    public ResponseDto<UserResponseDto> validateUser(@RequestParam String token) {
+        User user = userService.validateUser(token);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                new UserResponseDto(user.getId(), user.getFullName(), user.getEmail(), user.isActive())
+        );
+    }
+
 }
