@@ -1,5 +1,6 @@
 package dev.naman.userservice.controller;
 
+import dev.naman.userservice.dto.ResetPasswordDto;
 import dev.naman.userservice.dto.ResponseDto;
 import dev.naman.userservice.dto.UserDto;
 import dev.naman.userservice.dto.UserResponseDto;
@@ -34,5 +35,24 @@ public class RegistrationController {
                 new UserResponseDto(user.getId(), user.getFullName(), user.getEmail(), user.isActive())
         );
     }
+
+    @PostMapping("/user/resetPassword")
+    public ResponseDto<UserResponseDto> resetPassword(@RequestBody UserDto userDto) {
+        User user = userService.resetPassword(userDto);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                new UserResponseDto(user.getId(), user.getFullName(), user.getEmail(), user.isActive())
+        );
+    }
+
+    @PostMapping("/user/newPassword")
+    public ResponseDto<UserResponseDto> newPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        User user = userService.newPassword(resetPasswordDto);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                new UserResponseDto(user.getId(), user.getFullName(), user.getEmail(), user.isActive())
+        );
+    }
+
 
 }
