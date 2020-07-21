@@ -2,8 +2,10 @@ package dev.naman.userservice.service;
 
 import dev.naman.userservice.dto.UserDto;
 import dev.naman.userservice.event.SuccessfulRegistrationEvent;
+import dev.naman.userservice.model.PasswordResetToken;
 import dev.naman.userservice.model.User;
 import dev.naman.userservice.model.VerificationToken;
+import dev.naman.userservice.repository.PasswordResetTokenRepository;
 import dev.naman.userservice.repository.UserRepository;
 import dev.naman.userservice.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ApplicationEventPublisher applicationEventPublisher;
 
+    @Autowired
+    PasswordResetTokenRepository passwordResetTokenRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
@@ -52,6 +56,36 @@ public class UserServiceImpl implements UserService {
         );
 
         return savedUser;
+    }
+
+    @Override
+    public Void resetPassWord(User User) {
+        return null;
+    }
+
+    @Override
+    public void setPassWord(String token, String newPassword) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if(passwordResetToken == null)
+        {
+            return ;
+        }
+        if(passwordResetToken.getExpiryTime().getTime()-new Date().getTime() > 0 )
+        {
+            User verifiedUser = passwordResetToken.getUser();
+
+            // update password
+            verifiedUser.setPassword(passwordEncoder.encode(newPassword));
+
+            //sace to the DB.
+            userRepository.save(verifiedUser);
+
+        } else
+        {
+            // time expired.
+        }
+
     }
 
     @Override
@@ -78,6 +112,8 @@ public class UserServiceImpl implements UserService {
         } else {
             return null;
         }
+
+
 
     }
 }
