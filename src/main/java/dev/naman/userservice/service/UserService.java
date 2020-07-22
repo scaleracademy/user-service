@@ -9,8 +9,8 @@ public interface UserService {
 
     User validateUser(String token);
 
-    Void resetPassWord(User User);
+    User resetPassWord(User User);
 
-    void setPassWord(String token, String newPassword);
+    User setPassWord(String token, String newPassword);
 
 }

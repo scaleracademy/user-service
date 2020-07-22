@@ -1,4 +1,4 @@
-package dev.naman.userservice.event.listener;
+package dev.naman.userservice.event;
 
 import dev.naman.userservice.model.User;
 import lombok.Getter;

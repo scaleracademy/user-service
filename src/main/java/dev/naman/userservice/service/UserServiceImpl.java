@@ -1,6 +1,7 @@
 package dev.naman.userservice.service;
 
 import dev.naman.userservice.dto.UserDto;
+import dev.naman.userservice.event.SuccessfulPassWordResetEvent;
 import dev.naman.userservice.event.SuccessfulRegistrationEvent;
 import dev.naman.userservice.model.PasswordResetToken;
 import dev.naman.userservice.model.User;
@@ -59,31 +60,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Void resetPassWord(User User) {
-        return null;
+    public User resetPassWord(User savedUser) {
+        // TODO: Generate token for password reset.
+        applicationEventPublisher.publishEvent(
+                new SuccessfulPassWordResetEvent(savedUser)
+        );
+
+        savedUser = userRepository.findById(savedUser.getId()).get();
+        return savedUser;
     }
 
     @Override
-    public void setPassWord(String token, String newPassword) {
+    public User setPassWord(String token, String newPassword) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
+        // Token is not present
         if(passwordResetToken == null)
         {
-            return ;
+            return null ;
         }
-        if(passwordResetToken.getExpiryTime().getTime()-new Date().getTime() > 0 )
+        else if(passwordResetToken.getExpiryTime().getTime()-new Date().getTime() > 0 )
         {
             User verifiedUser = passwordResetToken.getUser();
 
             // update password
             verifiedUser.setPassword(passwordEncoder.encode(newPassword));
 
-            //sace to the DB.
+            //save to the DB.
             userRepository.save(verifiedUser);
+
+            // delete token.
+            passwordResetTokenRepository.delete(passwordResetToken);
+
+            return verifiedUser;
+
 
         } else
         {
-            // time expired.
+            return  null;
         }
 
     }
