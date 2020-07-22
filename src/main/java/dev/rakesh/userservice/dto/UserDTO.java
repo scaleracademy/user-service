@@ -1,5 +1,7 @@
 package dev.rakesh.userservice.dto;
 
+import dev.rakesh.userservice.annotations.ValidEmail;
+import dev.rakesh.userservice.annotations.ValidPassword;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,16 +12,17 @@ import javax.validation.constraints.Size;
 @Setter
 public class UserDTO{
 
-	@NotEmpty
+	@NotEmpty(message = "fullName should not be empty")
 	@Size(min = 1)
 	private String fullName;
 
-	@NotEmpty
+	@ValidEmail
+	@NotEmpty(message = "Email should not be empty")
 	@Size(min = 1)
 	private String email;
 
-	// TODO implement Custom Validation
-	@NotEmpty
-	@Size(min = 1)
+	@ValidPassword
+	@NotEmpty(message = "Password should not be empty")
+	@Size(min = 6, message = "Password Length should be greater than 6")
 	private String password;
 }

@@ -6,4 +6,6 @@ import dev.rakesh.userservice.model.User;
 public interface UserService {
 
 	public User registerUser(UserDTO userDTO);
+
+	public User validateUser(String token);
 }

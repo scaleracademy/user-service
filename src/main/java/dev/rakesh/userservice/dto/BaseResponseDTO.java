@@ -12,14 +12,14 @@ public class BaseResponseDTO<T> {
 
 	private T data;
 
-	private HttpStatus status;
+	private int status;
 
 	public BaseResponseDTO(Exception ex, HttpStatus status) {
 		this.error = ex.getMessage();
-		this.status = status;
+		this.status = status.value();
 	}
 	public BaseResponseDTO(HttpStatus status, T data) {
-		this.status = status;
+		this.status = status.value();
 		this.data = data;
 	}
 }
