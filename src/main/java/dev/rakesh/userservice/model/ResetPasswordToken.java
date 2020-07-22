@@ -13,16 +13,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-
 @Setter
 @Getter
 @Entity
-@Table(name = "token")
-public class VerificationToken {
+@Table(name = "password_token")
+public class ResetPasswordToken {
 
 	private static final int VALIDITY_TIME = 24;
 
-	@Id
+	@javax.persistence.Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long Id;
 
@@ -33,11 +32,11 @@ public class VerificationToken {
 
 	private Date expiryTime;
 
-	public VerificationToken() {
+	public ResetPasswordToken(){
 
 	}
 
-	public VerificationToken(User user) {
+	public ResetPasswordToken(User user) {
 
 		this.token = generateRandomString();
 		this.user = user;
