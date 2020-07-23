@@ -104,8 +104,6 @@ public class UserServiceImpl implements UserService {
 
 		User tokenUser = resetPasswordToken.getUser();
 
-		// Validity is One Day
-
 		if (resetPasswordToken.getExpiryTime().getTime() < new Date().getTime()) {
 			throw new WebServiceException("Token Expired");
 		}
