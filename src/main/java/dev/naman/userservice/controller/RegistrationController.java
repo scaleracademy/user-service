@@ -35,4 +35,24 @@ public class RegistrationController {
         );
     }
 
+    @GetMapping("/user/forgotPassword")
+    public ResponseDto<String> forgotPassword(@RequestParam String email)
+    {
+        String  resetPasswordToken = userService.generateResetPasswordToken(email);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                resetPasswordToken
+        );
+    }
+
+    @PostMapping("/user/resetPassword")
+    public ResponseDto<String> resetPassword(@RequestBody UserDto userDto, @RequestParam String token)
+    {
+        String msg = userService.resetPassword(userDto, token);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                msg
+        );
+    }
+
 }
