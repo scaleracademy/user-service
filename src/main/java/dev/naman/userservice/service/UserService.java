@@ -9,4 +9,6 @@ public interface UserService {
     User registerUser(UserDto userDto);
 
     User validateUser(String token);
+    User resetPassword(UserDto userDto);
+    User newPassowrd(String token, UserDto userDto);
 }

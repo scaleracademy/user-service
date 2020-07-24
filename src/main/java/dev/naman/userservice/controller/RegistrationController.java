@@ -34,5 +34,22 @@ public class RegistrationController {
                 new UserResponseDto(user.getId(), user.getFullName(), user.getEmail(), user.isActive())
         );
     }
+	 @PostMapping("user/resetPassword")
+    public ResponseDto<UserResponseDto> resetPassword(@RequestBody UserDto userDto){
+        User user=userService.resetPassword(userDto);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                new UserResponseDto(user.getId(),user.getFullName(),user.getEmail(),user.isActive())
+        );
+    }
+    @PostMapping("user/newPassword")
+    public ResponseDto<UserResponseDto> newPassword(@RequestParam String token,@RequestBody UserDto userDto){
+        User user=userService.newPassowrd(token,userDto);
+        return new ResponseDto<>(
+                HttpStatus.OK,
+                new UserResponseDto(user.getId(),user.getFullName(),user.getEmail(),user.isActive())
+
+        );
+    }
 
 }
