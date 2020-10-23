@@ -2,8 +2,10 @@ package dev.naman.userservice.service;
 
 import dev.naman.userservice.dto.UserDto;
 import dev.naman.userservice.event.SuccessfulRegistrationEvent;
+import dev.naman.userservice.model.ResetPasswordToken;
 import dev.naman.userservice.model.User;
 import dev.naman.userservice.model.VerificationToken;
+import dev.naman.userservice.repository.ResetPasswordTokenRepository;
 import dev.naman.userservice.repository.UserRepository;
 import dev.naman.userservice.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ApplicationEventPublisher applicationEventPublisher;
 
-
+	@Autowired
+    ResetPasswordTokenRepository resetPasswordTokenRepository;
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     @Override
@@ -79,5 +82,34 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
+    }
+
+    @Override
+    public User resetPassword(UserDto userDto) {
+        User user=userRepository.findByEmail(userDto.getEmail());
+        if(user==null){
+            return null;
+        }
+        ResetPasswordToken resetPasswordToken=new ResetPasswordToken(user);
+        resetPasswordTokenRepository.save(resetPasswordToken);
+        return user;
+    }
+
+    @Override
+    public User newPassowrd(String token, UserDto userDto) {
+        Optional<ResetPasswordToken>resetPasswordToken=resetPasswordTokenRepository.findByToken(token);
+        if(resetPasswordToken.isEmpty()){
+            return null;
+        }
+        if(resetPasswordToken.get().getExpiryTime().getTime()-new Date().getTime()>0){
+            User user=resetPasswordToken.get().getUser();
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            userRepository.save(user);
+            resetPasswordTokenRepository.delete(resetPasswordToken.get());
+            return user;
+        }
+        else{
+            return null;
+        }
     }
 }
